@@ -18,7 +18,6 @@ rule read = parse
     | '\n'              { Location.incr_line lexbuf; read lexbuf }
     | intiger as nb {INT (int_of_string (nb))}
     | floating as nb   { FLOAT (float_of_string nb)}
-    | "=" {EQ}
     | ";" {SEMICOLON}
     | "+"           { PLUS }
     | "-"           { MINUS }
@@ -26,6 +25,26 @@ rule read = parse
     | "*"           { TIMES }
     | "%"           { MOD }
     | ";"           { SEMICOLON }
+
+    | "="           {EQ}
+    | "+="          {SELFADD}
+    | "-="          {SELFSUB}
+    | "*="          {SELFMUL}
+    | "/="          {SELFDIV}
+    | "&="          {SELFAND}
+    | "|="          {SELFOR}
+    | "^="          {SELFXOR}
+    | "%="          {SELFMOD}
+    | "<<="         {SELFLEFTSHIFT}
+    | ">>="         {SELFRIGHTSHIFT}
+    | ">>>="        {USELFRIGHTSHIFT}
+
+    | "++"        {INCREMENT}
+    | "--"        {DECREMENT}
+    | "!"       {NEGATION}
+    | "~"       {BCOMPLEMENT}
+
+
     | "false"       { FALSE }
     | "true"        { TRUE }
     | "float"       { IDFLOAT }

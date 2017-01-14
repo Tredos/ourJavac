@@ -2,9 +2,12 @@
     open AST
 %}
 
-%token EOF SEMICOLON PLUS MINUS DIV TIMES MOD  
-%token FALSE TRUE IDFLOAT IDINT IDBYTE IDSHORT IDLONG IDCHAR IDDOUBLE 
-%token IDBOOLEAN IF THEN ELSE LBRA RBRA FOR  LPAR RPAR EQ
+%token EOF SEMICOLON PLUS MINUS DIV TIMES MOD  FALSE TRUE IDFLOAT IDINT IDBYTE IDSHORT IDLONG IDCHAR IDDOUBLE IDBOOLEAN IF THEN ELSE LBRA RBRA FOR  LPAR RPAR
+/*assignment Operators*/
+%token EQ SELFADD SELFSUB SELFMUL SELFDIV SELFAND SELFOR SELFXOR SELFMOD SELFLEFTSHIFT SELFRIGHTSHIFT USELFRIGHTSHIFT
+
+%token  INCREMENT DECREMENT NEGATION BCOMPLEMENT
+
 %token <string> IDENT
 %token <string> STRING
 %token <float> FLOAT
@@ -35,12 +38,32 @@ statement:
   | i=ifStatement {i}
   | f=forStatement {f}
 
+prefix_operator:
+  | NEGATION {"!"}
+  | BCOMPLEMENT {"~"}
 
+postfix_operator:
+  | INCREMENT {"++"}
+  | DECREMENT   {"--"}
 ifStatement:
   | IF LPAR op=operation RPAR LBRA e=statement RBRA ELSE LBRA e2=statement RBRA 
             { IfStatement(IfThenElse(op,e,e2)) }
   | IF LPAR op=operation RPAR LBRA e=statement RBRA                        
             { IfStatement(IfThen(op,e)) }
+
+assignment_operator:
+  | EQ {"="}
+  | SELFADD {"+="}
+  | SELFSUB {"-="}
+  | SELFMUL {"*="}
+  | SELFDIV {"/="}
+  | SELFAND {"&="}
+  | SELFOR  {"|="}
+  | SELFXOR {"^="}
+  | SELFMOD {"%="}
+  | SELFLEFTSHIFT {"<<="}
+  | SELFRIGHTSHIFT {">>="}
+  | USELFRIGHTSHIFT  {">>>="}
 
 forStatement:
   | FOR LPAR forinit=statement condition=operation SEMICOLON forupdate=statement RPAR LBRA action=statement RBRA
