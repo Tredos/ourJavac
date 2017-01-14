@@ -2,9 +2,10 @@
     open AST
 %}
 
-%token EOF EQ SEMICOLON UNKNOWN INTID
-
+%token EOF SEMICOLON PLUS MINUS DIV TIMES MOD  FALSE TRUE IDFLOAT IDINT IDBYTE IDSHORT IDLONG IDCHAR IDDOUBLE IDBOOLEAN IF THEN ELSE LBRA RBRA FOR  LPAR RPAR EQ
+%token <string> IDENT
 %token <string> STRING
+%token <float> FLOAT
 %token <int> INT
 %start start
 %type <AST.ast> start
@@ -17,6 +18,5 @@ expression:
 | SEMICOLON { Semicolon}
 | EQ { Equal}
 | i=INT {Integer (i)}
-| INTID s=STRING EQ i = INT SEMICOLON { IntDeclaration (s,i)}
+| IDINT s=STRING EQ i = INT SEMICOLON { IntDeclaration (s,i)}
 | s = STRING { String (s)}
-| UNKNOWN  { Invalid}
