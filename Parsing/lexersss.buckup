@@ -1,0 +1,102 @@
+{
+    open Parser
+    exception SyntaxError of string
+}
+
+let sub = '\x1A'
+let space = [' ' '\t' "\n\r" ]
+
+rule read = parse
+    | space+            { read lexbuf }
+    | '\n'              { Location.incr_line lexbuf; read lexbuf }
+    | ';'               { SEMICOLON }
+    | '*'               { STAR }
+    | '.'               { POINT }
+    | "=" {EQ}
+   | "+="  {SELFADD}
+   | "-="  {SELFSUB}
+   | "*="  {SELFMUL}
+   | "/="  {SELFDIV}
+   | "&="  {SELFAND}
+   | "|="  {SELFOR}
+   | "^="  {SELFXOR}
+   | "%="  {SELFMOD}
+   | "<<=" {SELFLEFTSHIFT}
+   | ">>=" {SELFRIGHTSHIFT}
+   | ">>>="  {USELFRIGHTSHIFT}
+   | "||"  {OR}
+   | "&&"  {AND}
+   | "|"  {BOR}
+   | "^"  {BXOR}
+   | "&"  {BAND}
+   | "=="  {EQUAL}
+   | "!="  {NOTEQUAL}
+   | "<"  {LESS}
+   | ">"  {GREATER}
+   | "<="  {LESSEQUAL}
+   | ">="  {GREATEREAQUAL}
+   | "<<"  {LSHIFT}
+   | ">>"  {RSHIFT}
+   | ">>>"  {ZFRSHIFT}
+   | "+"  {ADD}
+   | "-"  {SUB}
+   | "*"  {MUL}
+   | "/"  {DIV}
+   | "%"  {MOD}
+   | "abstract" {ABSTRACT}
+   | "continue" {CONTINUE}
+   | "for" {FOR}
+   | "new" {NEW}
+   | "switch" {SWITCH}
+   | "assert" {ASSERT}
+   | "default" {DEFAULT}
+   | "if" {IF}
+   | "package" {PACKAGE}
+   | "synchronized" {SYNCRONISED}
+   | "boolean" {BOOL}
+   | "do" {DO}
+   | "goto" {GOTO}
+   | "private" {PRIVATE}
+   | "this" {THIS}
+   | "break" {BREAK}
+   | "double" {DOUBE}
+   | "implements" {IMPLEMENTS}
+   | "protected" {PROTECTED}
+   | "throw" {THROW}
+   | "byte" {BYTE}
+   | "else" {ELSE}
+   | "import" {IMPORT}
+   | "public" {PUBLIC}
+   | "throws" {THROWS}
+   | "case" {CASE}
+   | "enum" {ENUM}
+   | "instanceof" {INSTANCEOF}
+   | "return" {RETURN}
+   | "transient" {TRANSIENT}
+   | "catch" {CATCH}
+   | "extends" {EXTENDS}
+   | "int" {INT}
+   | "short" {SHORT}
+   | "try" {TRY}
+   | "char" {CHAR}
+   | "final" {FINAL}
+   | "interface" {INTERFACE}
+   | "static" {STATIC}
+   | "void" {VOID}
+   | "class" {CLASS}
+   | "finally" {FAMILY}
+   | "long" {LONG}
+   | "strictfp" {STRICTFP}
+   | "volatile" {VOLATILE}
+   | "const" {CONST}
+   | "float" {FLOAT}
+   | "native" {NATIVE}
+   | "super" {SUPER}
+   | "while" {WHILE}
+    | "{" { RBRACKET }
+    | "}" { LBRACKET }
+    | "extends" { EXTENDS }
+    | "implements" { IMPLEMENTS }
+    | ['a'-'z''A'-'Z']+ as s   { IDENTIFIER(s) }
+    | eof               { EOF }
+    | _ { raise (SyntaxError ("Unexpected char: " ^ Lexing.lexeme lexbuf)) }
