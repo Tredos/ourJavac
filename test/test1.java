@@ -1,2 +1,1 @@
-int myvalue = 10 ;
-int anotheralue = 70 ;
+int x = 1 ;

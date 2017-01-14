@@ -16,8 +16,6 @@ let floating = digit+ '.' digit*
 rule read = parse
     | space+            { read lexbuf }
     | '\n'              { Location.incr_line lexbuf; read lexbuf }
-    | "int" {IDINT}
-    | name  { STRING (Lexing.lexeme lexbuf) }
     | intiger as nb {INT (int_of_string (nb))}
     | floating as nb   { FLOAT (float_of_string nb)}
     | "=" {EQ}
@@ -45,6 +43,7 @@ rule read = parse
     | "}"           { RBRA }
     | "for"         { FOR }
     | ident         { IDENT (Lexing.lexeme lexbuf) }
+    | name  { STRING (Lexing.lexeme lexbuf) }
     | "("           { LPAR }
     | ")"           { RPAR }
     | eof {EOF}

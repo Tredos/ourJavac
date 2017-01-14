@@ -23,5 +23,5 @@ let parse_with_error lexbuf =
 
 let execute lexbuf verbose =
     let ast = parse_with_error lexbuf in
-    print_ast ast;
-    print_string "\n"
+    print_string(print_ast ast);
+    print_string " \n"
