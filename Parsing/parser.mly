@@ -2,11 +2,19 @@
     open AST
 %}
 
-%token EOF SEMICOLON PLUS MINUS DIV TIMES MOD  FALSE TRUE IDFLOAT IDINT IDBYTE IDSHORT IDLONG IDCHAR IDDOUBLE IDBOOLEAN IF THEN ELSE LBRA RBRA FOR  LPAR RPAR
+%token EOF SEMICOLON PLUS MINUS DIV TIMES MOD  FALSE TRUE IDFLOAT IDINT IDBYTE IDSHORT IDLONG IDCHAR IDDOUBLE IDBOOLEAN THEN ELSE LBRA RBRA  LPAR RPAR QUESTION
 /*assignment Operators*/
 %token EQ SELFADD SELFSUB SELFMUL SELFDIV SELFAND SELFOR SELFXOR SELFMOD SELFLEFTSHIFT SELFRIGHTSHIFT USELFRIGHTSHIFT
 
-%token  INCREMENT DECREMENT NEGATION BCOMPLEMENT BREAK SWITCH CASE DEFAULT COLON
+/* statements */
+%token ASSERT IF FOR WHILE DO TRY SWITCH SYNCHRONISED RETURN THROW CONTINUE  BREAK  CASE DEFAULT COLON
+
+/*infix operators */
+%token OR AND BOR BXOR BAND EQUAL NOTEQUAL LESS GREATER LESSEQUAL GREATEREAQUAL LSHIFT RSHIFT ZFRSHIFT
+
+/*keywords*/
+%token INSTANCEOF NEW
+%token  INCREMENT DECREMENT NEGATION BCOMPLEMENT
 
 %token <string> IDENT
 %token <string> STRING
@@ -18,8 +26,6 @@
 %type < AST.statement > statement
 %type  <AST.operation > operation
 %type < AST.const > const
-
-
 
 
 %left PLUS MINUS
@@ -37,7 +43,30 @@ statement:
   | d=declaration {d}
   | i=ifStatement {i}
   | f=forStatement {f}
+  | w=whileStatement {w}
   | s=switchStatement {s}
+
+infix_operator:
+|  OR {"||"}
+|  AND {"&&"}
+|  BOR {"|"}
+|  BXOR {"^"}
+|  BAND {"&"}
+|  EQUAL {"=="}
+|  NOTEQUAL {"!="}
+|  LESS {"<"}
+|  GREATER {">"}
+|  LESSEQUAL {"<="}
+|  GREATEREAQUAL {">="}
+|  LSHIFT {"<<"}
+|  RSHIFT {">>"}
+|  ZFRSHIFT {">>>"}
+|  PLUS {"+"}
+|  MINUS {"-"}
+|  TIMES {"*"}
+|  DIV {"/"}
+|  MOD {"%"}
+
 
 prefix_operator:
   | NEGATION {"!"}
@@ -61,10 +90,15 @@ switch_case:
 
 
 ifStatement:
-  | IF LPAR op=operation RPAR LBRA e=statement RBRA ELSE LBRA e2=statement RBRA 
+  | IF LPAR op=operation RPAR LBRA e=statement RBRA ELSE LBRA e2=statement RBRA
             { IfStatement(IfThenElse(op,e,e2)) }
-  | IF LPAR op=operation RPAR LBRA e=statement RBRA                        
+  | IF LPAR op=operation RPAR LBRA e=statement RBRA
             { IfStatement(IfThen(op,e)) }
+
+whileStatement:
+| WHILE LPAR op=operation RPAR LBRA s = statement RBRA { While(op, s) }
+| DO LBRA s = statement RBRA WHILE LPAR op=operation RPAR  SEMICOLON { DoWhile(op, s) }
+
 
 assignment_operator:
   | EQ {"="}
@@ -103,7 +137,7 @@ operation:
       { Binop(o,e1,e2)}
   | id=IDENT
       { Var id }
-  | c=const 
+  | c=const
       {Const c}
 
 
@@ -135,10 +169,10 @@ const:
   | IDBYTE    { ByteType }
   | IDSHORT   { ShortType }
   | IDINT     { IntType }
-  | IDLONG    { LongType }  
+  | IDLONG    { LongType }
   | IDCHAR    { CharType }
   | IDFLOAT   { FloatType }
   | IDDOUBLE   { DoubleType }
   | IDBOOLEAN   { BooleanType }
- 
+
 %%

@@ -12,14 +12,14 @@ type const =
 type basicType =
   | ByteType
   | ShortType
-  | IntType 
+  | IntType
   | LongType
   | CharType
   | BooleanType
-  | FloatType 
+  | FloatType
   | DoubleType
 
-type operation = 
+type operation =
   | BooleanOperation
   | Bool of bool
   | Const of const
@@ -45,6 +45,8 @@ and statement =
   | Declaration of basicType * string * operation option
   | IfStatement of ifStatement
   | ForStatement of forStatement
+  |  While of operation * statement
+  | DoWhile of operation  * statement
   | SwitchStatement of switch_statement
 
 type expression =
@@ -105,9 +107,9 @@ let rec eval env exp =
 
 let rec string_of_operation op =
   match op with
-  | Const c -> string_of_const c 
+  | Const c -> string_of_const c
   | Var v -> "VAR "^v
-  | Binop(op, e1, e2) -> 
+  | Binop(op, e1, e2) ->
       "(" ^(string_of_operation e1)^ (string_of_op_b op) ^(string_of_operation e2)^ ")"
   | Unop(op, e) -> "(" ^ (string_of_op_u op) ^(string_of_operation e)^ ")"
   | Bool b -> string_of_bool b
@@ -128,7 +130,9 @@ let print_variable = function
 
 let rec print_statement = function
     | Declaration(bt, id, Some(op)) -> "Declaration avec valeur "^string_of_basicType(bt)^id^string_of_operation(op)
-  	| Declaration(bt, id, None) -> "Declaration sans valeur "^string_of_basicType(bt)^id
+    | Declaration(bt, id, None) -> "Declaration sans valeur "^string_of_basicType(bt)^id
+    | While(op, st) -> "While ("^string_of_operation(op)^") {"^print_statement st ^ "}"
+    | DoWhile(op, st) -> "do{ \n"^print_statement st ^ ";\n} while (" ^ string_of_operation(op)^"); \n"
   	| IfStatement(i) -> begin match i with
   			| IfThenElse(op, e1, e2) -> " IF "^string_of_operation(op)^" THEN "^print_statement(e1)^" ELSE "^print_statement(e2)
 			| IfThen(op, e1) -> " IF "^string_of_operation(op)^" THEN "^print_statement(e1)
@@ -143,7 +147,7 @@ let rec print_statement = function
 
 let rec print_expression = function
 	| [] -> ""
-	| i::t -> begin match i with 
+	| i::t -> begin match i with
 				| Statement(s) -> print_statement(s)^print_expression(t)
 				end
         

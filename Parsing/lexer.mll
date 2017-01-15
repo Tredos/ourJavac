@@ -26,6 +26,7 @@ rule read = parse
     | "%"           { MOD }
     | ";"           { SEMICOLON }
     | ":"           { COLON }
+    | "?"           { QUESTION }
 
     | "="           {EQ}
     | "+="          {SELFADD}
@@ -39,6 +40,22 @@ rule read = parse
     | "<<="         {SELFLEFTSHIFT}
     | ">>="         {SELFRIGHTSHIFT}
     | ">>>="        {USELFRIGHTSHIFT}
+
+
+    | "||"  {OR}
+    | "&&"  {AND}
+    | "|"  {BOR}
+    | "^"  {BXOR}
+    | "&"  {BAND}
+    | "=="  {EQUAL}
+    | "!="  {NOTEQUAL}
+    | "<"  {LESS}
+    | ">"  {GREATER}
+    | "<="  {LESSEQUAL}
+    | ">="  {GREATEREAQUAL}
+    | "<<"  {LSHIFT}
+    | ">>"  {RSHIFT}
+    | ">>>"  {ZFRSHIFT}
 
     | "++"        {INCREMENT}
     | "--"        {DECREMENT}
@@ -59,12 +76,30 @@ rule read = parse
     | "char"        { IDCHAR }
     | "double"      { IDDOUBLE }
     | "boolean"     { IDBOOLEAN }
+
     | "if"          { IF }
     | "then"        { THEN }
     | "else"        { ELSE }
     | "{"           { LBRA }
     | "}"           { RBRA }
     | "for"         { FOR }
+    | "while"       { WHILE }
+
+    | "assert"    {ASSERT}
+    | "if"    {IF}
+    | "for"    {FOR}
+    | "while"    {WHILE}
+    | "do"    {DO}
+    | "try"    {TRY}
+    | "switch"    {SWITCH}
+    | "synchronized"    {SYNCHRONISED}
+    | "return"    {RETURN}
+    | "throw"    {THROW}
+    | "break"    {BREAK}
+    | "continue"    {CONTINUE}
+    | "instanceof" { INSTANCEOF }
+    | "new" {NEW}
+
     | ident         { IDENT (Lexing.lexeme lexbuf) }
     | name  { STRING (Lexing.lexeme lexbuf) }
     | "("           { LPAR }
