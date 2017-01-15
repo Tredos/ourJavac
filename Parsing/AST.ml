@@ -35,10 +35,17 @@ and forStatement =
 	| BasicFor of statement option * operation option * statement option * statement option
 	| EnhancedFor
 
+and switch_statement = Switch of operation * switch_case list
+
+and switch_case = 
+  | Default_case of statement
+  | Normal_case of operation * statement 
+
 and statement =
   | Declaration of basicType * string * operation option
   | IfStatement of ifStatement
   | ForStatement of forStatement
+  | SwitchStatement of switch_statement
 
 type expression =
 	| Statement of statement
@@ -105,9 +112,14 @@ let rec string_of_operation op =
   | Unop(op, e) -> "(" ^ (string_of_op_u op) ^(string_of_operation e)^ ")"
   | Bool b -> string_of_bool b
 
-
-
-
+(*
+and rec string_of_switch_case_list = function
+  | [] -> ""
+  | t::q -> begin match t with 
+            | Default_case(s) -> " Default: "^print_statement(s)^" \n"^string_of_switch_case_list(q)
+            | Normal_case(op, s) -> " case :"^string_of_operation(op)^" : "^print_statement(s)^" \n"^string_of_switch_case_list(q)
+            end
+*)
 
 let print_variable = function
 |(d,v) -> print_string ("DECLARATION ("^d ^ "," ^string_of_int v ^")")
@@ -124,8 +136,10 @@ let rec print_statement = function
   	| ForStatement(f) -> begin match f with
   			| BasicFor(Some(forinit),Some(condition),Some(forupdate),Some(action)) -> " FOR (init : "^print_statement(forinit)^" condition : "^string_of_operation(condition)^" update : "^print_statement(forupdate)^" DO "^print_statement(action)
   			end 
-  				
-
+  	|SwitchStatement(s) -> begin match s with
+        | Switch(op,switch_case_list) ->" SWITCH ("^string_of_operation(op)^") \n"
+          end
+        
 
 let rec print_expression = function
 	| [] -> ""

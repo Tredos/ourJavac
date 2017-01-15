@@ -6,7 +6,7 @@
 /*assignment Operators*/
 %token EQ SELFADD SELFSUB SELFMUL SELFDIV SELFAND SELFOR SELFXOR SELFMOD SELFLEFTSHIFT SELFRIGHTSHIFT USELFRIGHTSHIFT
 
-%token  INCREMENT DECREMENT NEGATION BCOMPLEMENT
+%token  INCREMENT DECREMENT NEGATION BCOMPLEMENT BREAK SWITCH CASE DEFAULT COLON
 
 %token <string> IDENT
 %token <string> STRING
@@ -37,6 +37,7 @@ statement:
   | d=declaration {d}
   | i=ifStatement {i}
   | f=forStatement {f}
+  | s=switchStatement {s}
 
 prefix_operator:
   | NEGATION {"!"}
@@ -45,6 +46,20 @@ prefix_operator:
 postfix_operator:
   | INCREMENT {"++"}
   | DECREMENT   {"--"}
+
+switchStatement:
+	| SWITCH LPAR op=operation RPAR LBRA b=switch_case_group RBRA
+		{ SwitchStatement(Switch(op, b))}
+
+switch_case_group:
+	| s=switch_case {[s]}
+	| s=switch_case b=switch_case_group {s::b}
+
+switch_case:
+	| CASE op=operation COLON s=statement BREAK SEMICOLON {Normal_case(op,s)}
+	| DEFAULT COLON s=statement 						  {Default_case(s)}
+
+
 ifStatement:
   | IF LPAR op=operation RPAR LBRA e=statement RBRA ELSE LBRA e2=statement RBRA 
             { IfStatement(IfThenElse(op,e,e2)) }

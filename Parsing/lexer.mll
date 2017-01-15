@@ -25,6 +25,7 @@ rule read = parse
     | "*"           { TIMES }
     | "%"           { MOD }
     | ";"           { SEMICOLON }
+    | ":"           { COLON }
 
     | "="           {EQ}
     | "+="          {SELFADD}
@@ -44,7 +45,10 @@ rule read = parse
     | "!"       {NEGATION}
     | "~"       {BCOMPLEMENT}
 
-
+    | "switch"      { SWITCH }
+    | "case"        { CASE }
+    | "default"     { DEFAULT }
+    | "break"       { BREAK}
     | "false"       { FALSE }
     | "true"        { TRUE }
     | "float"       { IDFLOAT }
@@ -66,3 +70,5 @@ rule read = parse
     | "("           { LPAR }
     | ")"           { RPAR }
     | eof {EOF}
+
+
